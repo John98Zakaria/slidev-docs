@@ -8,7 +8,7 @@ Slides are written within **a single markdown file** (by default `./slides.md`).
 
 You can use [the Markdown features](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) as you normally would, with the additional support of inlined HTML and Vue Components. Styling using [UnoCSS](/custom/config-unocss) is also supported. Use `---` padded with a new line to separate your slides.
 
-~~~md
+````md
 # Slidev
 
 Hello, World!
@@ -19,9 +19,9 @@ Hello, World!
 
 Directly use code blocks for highlighting
 
-//```ts
+```ts
 console.log('Hello, World!')
-//```
+```
 
 ---
 
@@ -32,13 +32,15 @@ You can directly use Windi CSS and Vue components to style and enrich your slide
 <div class="p-3">
   <Tweet id="20" />
 </div>
-~~~
+````
 
 ## Frontmatter & Layouts
 
 Specify layouts and other metadata for each slide by converting the separators into [frontmatter blocks](https://jekyllrb.com/docs/front-matter/). Each frontmatter starts with a triple-dash and ends with another. Texts between them are data objects in [YAML](https://www.cloudbees.com/blog/yaml-tutorial-everything-you-need-get-started/) format. For example:
 
-~~~md
+<!-- eslint-skip -->
+
+```md
 ---
 layout: cover
 ---
@@ -62,46 +64,49 @@ This is a page with the layout `center` and a background image.
 # Page 3
 
 This is a default page without any additional metadata.
-~~~
+```
 
 Refer to [customization](/custom/) for more details.
 
-> The custom syntax might not be compactible with some formatters like Prettier. To improve that, we also support using a direct `yaml` code block to define the frontmatter:
->
-> ~~~markdown
-> ---
-> layout: cover
-> ---
->
-> # Slidev
->
-> This is the cover page.
->
-> ---
->
-> ```yaml
-> # The first yaml block will be treated as the frontmatter of that slide
-> layout: center
-> background: './images/background-1.png'
-> class: 'text-white'
-> ```
->
-> # Page 2
->
-> This is a page with the layout `center` and a background image.
-> ~~~
->
-> (Available since v0.44.0)
+### Prettier Support
+
+> Available since v0.44
+
+The custom syntax might not be compactible with some formatters like Prettier.
+You can either install the [Prettier Plugin](/guide/editors#prettier-plugin) or use a direct `yaml` code block to define the frontmatter instead:
+
+````md
+---
+layout: cover
+---
+
+# Slidev
+
+This is the cover page.
+
+---
+
+```yaml
+# The first yaml block will be treated as the frontmatter of that slide
+layout: center
+background: './images/background-1.png'
+class: 'text-white'
+```
+
+# Page 2
+
+This is a page with the layout `center` and a background image.
+````
 
 ## Code Blocks
 
 One big reason I am building Slidev is needing to make my code look just right in the slides. So just as you expected, you can use Markdown flavored code block to highlight your code.
 
-~~~md
+````md
 ```ts
 console.log('Hello, World!')
 ```
-~~~
+````
 
 We support [Prism](https://prismjs.com), [Shiki](https://github.com/shikijs/shiki) as syntax highlighters. Refer to [the highlighters section](/custom/highlighters) for more details.
 
@@ -109,7 +114,7 @@ We support [Prism](https://prismjs.com), [Shiki](https://github.com/shikijs/shik
 
 To highlight specific lines, simply add line numbers within bracket `{}`. Line numbers start counting from 1 by default.
 
-~~~md
+````md
 ```ts {2,3}
 function add(
   a: Ref<number> | number,
@@ -118,12 +123,12 @@ function add(
   return computed(() => unref(a) + unref(b))
 }
 ```
-~~~
+````
 
-You can enable line number to all slides by setting `lineNumbers: true` on the config or enable each code block individually by setting `lines:true`. In case you want to disable the numbering for an specific block when `lineNumbers: true` you can set `lines:false` for that block:
+You can enable line number to all slides by setting `lineNumbers: true` on the config or enable each code block individually by setting `lines: true`. You can also set the starting line for each code block and highlight the lines accordingly, defaults to 1:
 
-~~~md
-```ts {2,3}{lines:true}
+````md
+```ts {6,7}{lines:true,startLine:5}
 function add(
   a: Ref<number> | number,
   b: Ref<number> | number
@@ -131,24 +136,11 @@ function add(
   return computed(() => unref(a) + unref(b))
 }
 ```
-~~~
+````
 
-You can also set the starting line for each code block and highlight the lines accordingly, defaults to 1:
+To change the highlight in multiple clicks, you can use `|` to separate them:
 
-~~~md
-```ts {6,7}{lines:true, startLine:5}
-function add(
-  a: Ref<number> | number,
-  b: Ref<number> | number
-) {
-  return computed(() => unref(a) + unref(b))
-}
-```
-~~~
-
-To change the highlight in multiple steps, you can use `|` to separate them. For example
-
-~~~md
+````md
 ```ts {2-3|5|all}
 function add(
   a: Ref<number> | number,
@@ -157,14 +149,14 @@ function add(
   return computed(() => unref(a) + unref(b))
 }
 ```
-~~~
+````
 
-This will first highlight `a: Ref<number> | number` and `b: Ref<number> | number`, and then `return computed(() => unref(a) + unref(b))` after one click, and lastly, the whole block. Learn more in the [clicks animations guide](/guide/animations).
+This will first highlight `a: Ref<number> | number` and `b: Ref<number> | number`, and then `return computed(() => unref(a) + unref(b))` after one click, and lastly, the whole block.
 
-You can start the highlight at a specific click:
+You can set the line number to `hide` to hide the code block or `none` to not highlight any line:
 
-~~~md
-```ts {2-3|5|all}{at:0}
+````md
+```ts {hide|none}
 function add(
   a: Ref<number> | number,
   b: Ref<number> | number
@@ -172,28 +164,15 @@ function add(
   return computed(() => unref(a) + unref(b))
 }
 ```
-~~~
+````
 
-This is especially useful when you need to sync different animations (when using `two-cols` layout and list animation for instance).
-You may need to set the [custom clicks count](/guide/animations#custom-clicks-count) for the slide progression to function correctly.
+::: tip
+Learn more in the [clicks animations guide](./animations#positioning).
+:::
 
-To skip highlighting any lines, you can set the line number to `0`. For example
+If the code doesn't fit into one slide, you use the `maxHeight` to set fixed height and enable scrolling:
 
-~~~md {1}
-```ts {0}
-function add(
-  a: Ref<number> | number,
-  b: Ref<number> | number
-) {
-  return computed(() => unref(a) + unref(b))
-}
-```
-~~~
-
-If the code doesn't fit into one slide, you can pass an extra maxHeight option which will set fixed height
-and enable scrolling
-
-~~~md {1}
+````md
 ```ts {2|3|7|12}{maxHeight:'100px'}
 function add(
   a: Ref<number> | number,
@@ -204,9 +183,11 @@ function add(
 /// ...as many lines as you want
 const c = add(1, 2)
 ```
-~~~
+````
 
 ### TwoSlash Integration
+
+> Available since v0.46
 
 This feature is only available when you [set `highlighter` to `shiki`](/custom/highlighters)
 
@@ -214,14 +195,14 @@ This feature is only available when you [set `highlighter` to `shiki`](/custom/h
 
 To use it, you can add `twoslash` to the code block's language identifier:
 
-~~~md
+````md
 ```ts twoslash
 import { ref } from 'vue'
 
 const count = ref(0)
 //            ^?
 ```
-~~~
+````
 
 It will be rendered as:
 
@@ -232,15 +213,62 @@ const count = ref(0)
 //            ^?
 ```
 
+<!-- For the popup to not to overlap the content below -->
+<div class="py-20" />
+
+### Shiki Magic Move
+
+> Available since v0.48
+
+[Shiki Magic Move](https://github.com/shikijs/shiki-magic-move) enables you to have granular transition between code changes, similar to Keynote's Magic Move. You can check [the playground](https://shiki-magic-move.netlify.app/) to see how it works.
+
+In Slidev, we bind it to the [clicks system](/guide/animations#click-animations). The syntax is wrap multiple code blocks representing each steps with <code>````md magic-move</code> (mind it's **4** backticks), this will be transformed into one code block, that morphing to each steps as you click.
+
+`````md
+````md magic-move
+```js
+console.log(`Step ${1}`)
+```
+```js
+console.log(`Step ${1 + 1}`)
+```
+```ts
+console.log(`Step ${3}` as string)
+```
+````
+`````
+
+It's also possible mix Magic Move with [line highlighting](#line-highlighting), for example:
+
+`````md
+````md magic-move {at:4} // [!code hl]
+```js {*|1|2-5} // [!code hl]
+let count = 1
+function add() {
+  count++
+}
+```
+
+Non-code blocks in between as ignored, you can put some comments.
+
+```js
+let count = 1
+const add = () => count += 1
+```
+````
+`````
+
+<!-- TODO: add an inline demo -->
+
 ### Monaco Editor
 
 Whenever you want to do some modification in the presentation, simply add `{monaco}` after the language id — it turns the block into a fully-featured Monaco editor!
 
-~~~md
+````md
 ```ts {monaco}
 console.log('HelloWorld')
 ```
-~~~
+````
 
 Learn more about [configuring Monaco](/custom/config-monaco).
 
@@ -334,7 +362,7 @@ You can also take notes for each slide. They will show up in [Presenter Mode](/g
 
 In Markdown, the last comment block in each slide will be treated as a note.
 
-~~~md
+```md
 ---
 layout: cover
 ---
@@ -356,19 +384,29 @@ The second page
 <!--
 This is another note
 -->
-~~~
+```
+
+Basic Markdown and HTML are also supported in notes on Presenter renderering.
+
+### Click Markers
+
+> Available since v0.48
+
+For some slides you might have longer notes that might be hard to find where you are looking at, we introduced the click markers that allows highlighting and auto-scrolling to the section of notes of your corresponding content. Put `[click]` markers in your notes for the timming you need to go to another [click](/guide/animations#click-animations), Slidev divide the content between the click markers and highlight them in presenter notes, synchronized with your slide progress.
+
+<!-- TODO: add a video -->
 
 ## Icons
 
-Slidev allows you to have the accessing to almost all the popular open-source iconsets **directly** in your markdown. Powered by [`unplugin-icons`](https://github.com/antfu/unplugin-icons) and [Iconify](https://iconify.design/).
+Slidev allows you to have the accessing to almost all the popular open-source iconsets **directly** in your markdown after installing the corresponding package. Powered by [`unplugin-icons`](https://github.com/antfu/unplugin-icons) and [Iconify](https://iconify.design/).
 
 The naming follows [Iconify](https://iconify.design/)'s conversion `{collection-name}-{icon-name}`. For example:
 
-- `<mdi-account-circle />` - <mdi-account-circle /> from [Material Design Icons](https://github.com/Templarian/MaterialDesign)
-- `<carbon-badge />` - <carbon-badge /> from [Carbon](https://github.com/carbon-design-system/carbon/tree/main/packages/icons)
-- `<uim-rocket />` - <uim-rocket /> from [Unicons Monochrome](https://github.com/Iconscout/unicons)
-- `<twemoji-cat-with-tears-of-joy />` - <twemoji-cat-with-tears-of-joy /> from [Twemoji](https://github.com/twitter/twemoji)
-- `<logos-vue />` - <logos-vue /> from [SVG Logos](https://github.com/gilbarbara/logos)
+- `<mdi-account-circle />` - <mdi-account-circle /> from [Material Design Icons](https://github.com/Templarian/MaterialDesign) - [`@iconify-json/mdi`](https://npmjs.com/package/@iconify-json/mdi)
+- `<carbon-badge />` - <carbon-badge /> from [Carbon](https://github.com/carbon-design-system/carbon/tree/main/packages/icons) - [`@iconify-json/carbon`](https://npmjs.com/package/@iconify-json/carbon)
+- `<uim-rocket />` - <uim-rocket /> from [Unicons Monochrome](https://github.com/Iconscout/unicons) - [`@iconify-json/uim`](https://npmjs.com/package/@iconify-json/uim)
+- `<twemoji-cat-with-tears-of-joy />` - <twemoji-cat-with-tears-of-joy /> from [Twemoji](https://github.com/twitter/twemoji) - [`@iconify-json/twemoji`](https://npmjs.com/package/@iconify-json/twemoji)
+- `<logos-vue />` - <logos-vue /> from [SVG Logos](https://github.com/gilbarbara/logos) - [`@iconify-json/logos`](https://npmjs.com/package/@iconify-json/logos)
 - And much more...
 
 Browse and search for all the icons available with [Icônes](https://icones.js.org/).
@@ -475,7 +513,7 @@ You can import code snippets from existing files via following syntax:
 <<< @/snippets/snippet.js
 ```
 
-::: ttp
+::: tip
 The value of `@` corresponds to the source root, the directory where the `slides.md` is located.
 :::
 
@@ -552,30 +590,32 @@ $$ {1|3|all}
 $$
 ```
 
+The `at` and `finally` options of [code blocks](#line-highlighting) are also available for LaTeX blocks.
+
 ## Diagrams
 
 You can also create diagrams / graphs from textual descriptions in your Markdown, powered by [Mermaid](https://mermaid-js.github.io/mermaid).
 
 Code blocks marked as `mermaid` will be converted to diagrams, for example:
 
-~~~md
-//```mermaid
+````md
+```mermaid
 sequenceDiagram
   Alice->John: Hello John, how are you?
   Note over Alice,John: A typical interaction
-//```
-~~~
+```
+````
 
 You can further pass an options object to it to specify the scaling and theming. The syntax of the object is a JavaScript object literal, you will need to add quotes (`'`) for strings and use comma (`,`) between keys.
 
-~~~md
-//```mermaid {theme: 'neutral', scale: 0.8}
+````md
+```mermaid {theme: 'neutral', scale: 0.8}
 graph TD
 B[Text] --> C{Decision}
 C -->|One| D[Result 1]
 C -->|Two| E[Result 2]
-//```
-~~~
+```
+````
 
 Learn more: [Demo](https://sli.dev/demo/starter/9) | [Mermaid](https://mermaid-js.github.io/mermaid)
 
@@ -586,6 +626,8 @@ Learn more: [Demo](https://sli.dev/demo/starter/9) | [Mermaid](https://mermaid-j
 You can split your `slides.md` into multiple files and organize them as you want.
 
 `slides.md` :
+
+<!-- eslint-skip -->
 
 ```md
 # Page 1
@@ -676,11 +718,11 @@ src: ./content.md
 
 > Available since v0.43.0
 
-Slidev has and experimental support for [MDC (Markdown Components) Syntax](https://content.nuxtjs.org/guide/writing/mdc) powered by [`markdown-it-mdc`](https://github.com/antfu/markdown-it-mdc).
+Slidev supports optional [MDC (Markdown Components) Syntax](https://content.nuxtjs.org/guide/writing/mdc) powered by [`markdown-it-mdc`](https://github.com/antfu/markdown-it-mdc).
 
-You can enable it by add `mdc: true` to the frontmatter of your markdown file.
+You can enable it by adding `mdc: true` to the frontmatter of your markdown file.
 
-```md
+```mdc
 ---
 mdc: true
 ---
@@ -694,4 +736,4 @@ The **default** slot
 ::
 ```
 
-Learn more about [the syntax](https://content.nuxtjs.org/guide/writing/mdc).
+Learn more about [the syntax](https://content.nuxt.com/guide/writing/mdc).

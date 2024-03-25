@@ -1,9 +1,8 @@
 import type { DefaultTheme } from 'vitepress'
 import { defineConfig } from 'vitepress'
 import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
-import vite from '../vite.config'
 
-const CURRENT_VERSION = '0.47.1'
+const CURRENT_VERSION = '0.48.0-beta.22'
 
 const Guide: DefaultTheme.NavItemWithLink[] = [
   {
@@ -191,6 +190,10 @@ const slidebars: DefaultTheme.SidebarItem[] = [
   {
     text: 'Built-in',
     items: BuiltIn,
+  },
+  {
+    text: 'Resources',
+    items: Resources,
   },
 ]
 
